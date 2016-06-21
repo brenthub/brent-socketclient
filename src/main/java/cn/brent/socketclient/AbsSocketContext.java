@@ -12,6 +12,9 @@ public abstract class AbsSocketContext implements ISokectContext{
 	/** 配置 */
 	protected final SocketConfig config;
 	
+	/** 运行开关 */
+	protected boolean runflag = false;
+	
 	public AbsSocketContext(SocketConfig config) {
 		config.verify();
 		this.config=config;
@@ -20,6 +23,28 @@ public abstract class AbsSocketContext implements ISokectContext{
 
 	public SocketConfig getConfig() {
 		return config;
+	}
+	
+	@Override
+	public void start() {
+		if(runflag){
+			return;
+		}
+		startHandler();
+		runflag = true;
+	}
+	
+	protected abstract void startHandler();
+	
+	protected abstract void stopHandler();
+	
+	@Override
+	public void stop() {
+		if(!runflag){
+			return;
+		}
+		stopHandler();
+		runflag = false;
 	}
 	
 }

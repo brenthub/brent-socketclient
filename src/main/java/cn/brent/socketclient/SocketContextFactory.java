@@ -24,7 +24,7 @@ public class SocketContextFactory {
 	
 	public static Map<String,ISokectContext> contextMap=new HashMap<String, ISokectContext>();
 	
-	public static ISokectContext getMQContext(String configName,String id){
+	public static ISokectContext getContext(String configName,String id){
 		String key=configName+"#"+id;
 		ISokectContext context=contextMap.get(key);
 		if(context==null){
@@ -47,8 +47,8 @@ public class SocketContextFactory {
 		return context;
 	}
 	
-	public static ISokectContext getMQContext(String id){
-		return getMQContext(DEFAULT_CONFIG_NAME, id);
+	public static ISokectContext getContext(String id){
+		return getContext(DEFAULT_CONFIG_NAME, id);
 	}
 	
 }

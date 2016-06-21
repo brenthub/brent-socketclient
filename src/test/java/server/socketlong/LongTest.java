@@ -9,7 +9,7 @@ import cn.brent.socketclient.SocketContextFactory;
 @Ignore
 public class LongTest {
 
-	ISokectContext context=SocketContextFactory.getMQContext("test2");
+	ISokectContext context=SocketContextFactory.getContext("test2");
 	
 	@Test
 	public void testSend() throws InterruptedException{

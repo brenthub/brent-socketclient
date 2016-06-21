@@ -19,12 +19,12 @@ public class SocketShortContext extends AbsSocketContext {
 	}
 
 	@Override
-	public void start() {
+	public void startHandler() {
 		logger.info("socketShortContext start sucess");
 	}
 
 	@Override
-	public void stop() {
+	public void stopHandler() {
 		logger.info("socketShortContext stop sucess");
 	}
 

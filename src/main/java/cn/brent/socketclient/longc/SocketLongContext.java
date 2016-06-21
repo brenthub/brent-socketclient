@@ -23,9 +23,6 @@ public class SocketLongContext extends AbsSocketContext {
 	/** 发送队列 */
 	protected LinkedBlockingQueue<byte[]> sendQueue = new LinkedBlockingQueue<byte[]>();
 
-	/** 运行开关 */
-	protected boolean runflag = false;
-
 	public static final int CHECK_RUN_INTERVAL = 5 * 60 * 1000;
 
 	public SocketLongContext(SocketLongConfig config) {
@@ -45,8 +42,7 @@ public class SocketLongContext extends AbsSocketContext {
 	}
 
 	@Override
-	public void start() {
-		runflag = true;
+	public void startHandler() {
 		// 开启发送任务
 		startSendTask();
 
@@ -61,8 +57,7 @@ public class SocketLongContext extends AbsSocketContext {
 	}
 
 	@Override
-	public void stop() {
-		runflag = false;
+	public void stopHandler() {
 		logger.info("socketLongContext stop sucess");
 	}
 
