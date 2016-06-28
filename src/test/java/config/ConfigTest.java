@@ -8,7 +8,7 @@ import org.junit.Test;
 import cn.brent.socketclient.config.Constant;
 import cn.brent.socketclient.config.SocketConfigs;
 
-@Ignore
+//@Ignore
 public class ConfigTest {
 
 	@Test
@@ -19,7 +19,7 @@ public class ConfigTest {
 	}
 	
 	@Test
-//	@Ignore
+	@Ignore
 	public void testFlag() throws UnsupportedEncodingException{
 		System.out.println(Constant.DEFAULT_SEND_END_FLAG.getBytes()[0]);
 		System.out.println("\n".getBytes()[0]);

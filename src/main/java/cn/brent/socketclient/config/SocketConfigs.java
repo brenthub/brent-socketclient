@@ -10,63 +10,96 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.ErrorHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 
 public class SocketConfigs {
 
+	protected static final Logger logger = LoggerFactory.getLogger(SocketConfigs.class);
+
 	private Map<String, SocketConfig> configs = new HashMap<String, SocketConfig>();
+
+	private static final String SCHEMA_LANGUAGE_ATTRIBUTE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
+
+	private static final String XSD_SCHEMA_LANGUAGE = "http://www.w3.org/2001/XMLSchema";
 
 	private SocketConfigs() {
 	}
 
 	public static SocketConfigs parse(String configName) {
-		Digester dig = new Digester();
-
-		// push 调用类
-		dig.push(new SocketConfigs());
-
-		// 设置匹配规则处理类
-		dig.setRules(new ExtendedBaseRules());
-
-		// 短连接
-		processNode(dig, "socket-configs/socket-short", SocketShortConfig.class);
-		// 发送者
-		processNode(dig, "socket-configs/socket-short/send", Send.class);
-		// 接收者
-		processNode(dig, "socket-configs/socket-short/receive", Receive.class);
-		// 异步消息
-		processNode(dig, "socket-configs/socket-short/msglistener", MsgListener.class);
-
-		// 长连接
-		processNode(dig, "socket-configs/socket-long", SocketLongConfig.class);
-		// 线程池
-		processNode(dig, "socket-configs/socket-long/pool", Pool.class);
-		// 长连接心跳
-		processNode(dig, "socket-configs/socket-long/heartbeat", Heartbeat.class);
-		// 发送者
-		processNode(dig, "socket-configs/socket-long/send", Send.class);
-		// 接收者
-		processNode(dig, "socket-configs/socket-long/receive", Receive.class);
-		// 异步消息
-		processNode(dig, "socket-configs/socket-long/msglistener", MsgListener.class);
-
-		dig.addSetNext("socket-configs/socket-short/send", "setSend");
-		dig.addSetNext("socket-configs/socket-short/receive", "setReceive");
-		dig.addSetNext("socket-configs/socket-short/msglistener", "setMsgListener");
-
-		dig.addSetNext("socket-configs/socket-long/pool", "setPool");
-		dig.addSetNext("socket-configs/socket-long/heartbeat", "setHeartbeat");
-		dig.addSetNext("socket-configs/socket-long/send", "setSend");
-		dig.addSetNext("socket-configs/socket-long/receive", "setReceive");
-		dig.addSetNext("socket-configs/socket-long/msglistener", "setMsgListener");
-
-		dig.addSetNext("socket-configs/socket-short", "addConfig");
-
-		dig.addSetNext("socket-configs/socket-long", "addConfig");
-
 		try {
+			Digester dig = new Digester();
+
+			dig.setValidating(true);
+			dig.setNamespaceAware(true);
+			dig.setProperty(SCHEMA_LANGUAGE_ATTRIBUTE, XSD_SCHEMA_LANGUAGE);
+			dig.setEntityResolver(new SocketClientResolver());
+			dig.setErrorHandler(new ErrorHandler() {
+
+				@Override
+				public void warning(SAXParseException exception) throws SAXException {
+					logger.warn("SAXParse Warning:", exception.getMessage());
+				}
+
+				@Override
+				public void fatalError(SAXParseException exception) throws SAXException {
+					logger.warn("SAXParse FatalError:" + exception.getMessage());
+					throw new RuntimeException(exception.getMessage());
+				}
+
+				@Override
+				public void error(SAXParseException exception) throws SAXException {
+					logger.warn("SAXParse error:" + exception.getMessage());
+					throw new RuntimeException(exception.getMessage());
+				}
+			});
+			// push 调用类
+			dig.push(new SocketConfigs());
+
+			// 设置匹配规则处理类
+			dig.setRules(new ExtendedBaseRules());
+
+			// 短连接
+			processNode(dig, "socket-configs/socket-short", SocketShortConfig.class);
+			// 发送者
+			processNode(dig, "socket-configs/socket-short/send", Send.class);
+			// 接收者
+			processNode(dig, "socket-configs/socket-short/receive", Receive.class);
+			// 异步消息
+			processNode(dig, "socket-configs/socket-short/msglistener", MsgListener.class);
+
+			// 长连接
+			processNode(dig, "socket-configs/socket-long", SocketLongConfig.class);
+			// 线程池
+			processNode(dig, "socket-configs/socket-long/pool", Pool.class);
+			// 长连接心跳
+			processNode(dig, "socket-configs/socket-long/heartbeat", Heartbeat.class);
+			// 发送者
+			processNode(dig, "socket-configs/socket-long/send", Send.class);
+			// 接收者
+			processNode(dig, "socket-configs/socket-long/receive", Receive.class);
+			// 异步消息
+			processNode(dig, "socket-configs/socket-long/msglistener", MsgListener.class);
+
+			dig.addSetNext("socket-configs/socket-short/send", "setSend");
+			dig.addSetNext("socket-configs/socket-short/receive", "setReceive");
+			dig.addSetNext("socket-configs/socket-short/msglistener", "setMsgListener");
+
+			dig.addSetNext("socket-configs/socket-long/pool", "setPool");
+			dig.addSetNext("socket-configs/socket-long/heartbeat", "setHeartbeat");
+			dig.addSetNext("socket-configs/socket-long/send", "setSend");
+			dig.addSetNext("socket-configs/socket-long/receive", "setReceive");
+			dig.addSetNext("socket-configs/socket-long/msglistener", "setMsgListener");
+
+			dig.addSetNext("socket-configs/socket-short", "addConfig");
+
+			dig.addSetNext("socket-configs/socket-long", "addConfig");
+
 			return (SocketConfigs) dig.parse(SocketConfigs.class.getResourceAsStream(configName));
 		} catch (Exception e) {
-			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
 	}

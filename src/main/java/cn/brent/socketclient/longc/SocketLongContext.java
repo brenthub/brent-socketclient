@@ -28,6 +28,7 @@ public class SocketLongContext extends AbsSocketContext {
 	public SocketLongContext(SocketLongConfig config) {
 		super(config);
 		Pool pool = config.getPool();
+		pool.setMaxIdle(pool.getMaxTotal());
 		sendHelper = new SendHelper(this);
 		socketPool = new GenericObjectPool<SocketWraper>(new SokectFactory(this), pool);
 	}
