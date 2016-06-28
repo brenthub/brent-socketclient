@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.brent.cn/schema/socketclient"
+	xmlns:tns="http://www.brent.cn/schema/socketclient" elementFormDefault="qualified">
+
+	<element name="socket-configs">
+		<annotation>
+			<documentation>
+   			<![CDATA[
+   			socket配置容器
+   			]]>
+			</documentation>
+		</annotation>
+		<complexType>
+			<sequence>
+				<choice minOccurs="0" maxOccurs="unbounded">
+					<element ref="tns:socket-short" />
+					<element ref="tns:socket-long" />
+				</choice>
+			</sequence>
+		</complexType>
+	</element>
+
+	<element name="socket-short">
+		<annotation>
+			<documentation>
+   			<![CDATA[
+   			定义一个socket短接连
+   			]]>
+			</documentation>
+		</annotation>
+		<complexType>
+			<all>
+				<element minOccurs="0" ref="tns:send" />
+				<element minOccurs="0" ref="tns:receive" />
+				<element minOccurs="0" ref="tns:msglistener" />
+			</all>
+			<attributeGroup ref="tns:socketAttr"></attributeGroup>
+		</complexType>
+	</element>
+
+	<element name="socket-long">
+		<annotation>
+			<documentation>
+   			<![CDATA[
+   			定义一个socket长接连
+   			]]>
+			</documentation>
+		</annotation>
+		<complexType>
+			<all>
+				<element minOccurs="0" ref="tns:pool" />
+				<element minOccurs="0" ref="tns:heartbeat" />
+				<element minOccurs="0" ref="tns:send" />
+				<element minOccurs="0" ref="tns:receive" />
+				<element minOccurs="0" ref="tns:msglistener" />
+			</all>
+			<attributeGroup ref="tns:socketAttr"></attributeGroup>
+		</complexType>
+
+	</element>
+
+	<element name="send">
+		<annotation>
+			<documentation>
+    		<![CDATA[
+   			发送配置
+   			]]>
+			</documentation>
+		</annotation>
+		<complexType>
+			<attribute name="charset" type="string" use="optional"
+				default="UTF-8">
+				<annotation>
+					<documentation>
+	    			<![CDATA[
+	    			发送编码
+	    			]]>
+					</documentation>
+				</annotation>
+			</attribute>
+			<attribute name="bufferSize" type="long">
+				<annotation>
+					<documentation>
+	    			<![CDATA[
+	    			发送缓存小大设置(单位：字节)，对应代码为socket.setSendBufferSize(bufferSize);
+	    			]]>
+					</documentation>
+				</annotation>
+			</attribute>
+			<attribute name="endFlag" type="string">
+				<annotation>
+					<documentation>
+	    			<![CDATA[
+	    			发送消息时自动在消息后面加上的标志位, 默认是加换行符，如果不需要加标志位，请等于空字符串
+	    			]]>
+					</documentation>
+				</annotation>
+			</attribute>
+		</complexType>
+	</element>
+
+	<element name="receive">
+		<annotation>
+			<documentation>
+    		<![CDATA[
+   			接收配置
+   			]]>
+			</documentation>
+		</annotation>
+		<complexType>
+			<attribute name="charset" type="string" use="optional"
+				default="UTF-8">
+				<annotation>
+					<documentation>
+	    			<![CDATA[
+	    			接收编码
+	    			]]>
+					</documentation>
+				</annotation>
+			</attribute>
+			<attribute name="bufferSize" type="long">
+				<annotation>
+					<documentation>
+	    			<![CDATA[
+	    			接收缓存小大设置(单位：字节)，对应代码为：socket.setReceiveBufferSize(bufferSize);
+	    			]]>
+					</documentation>
+				</annotation>
+			</attribute>
+			<attribute name="processor" type="string">
+				<annotation>
+					<documentation>
+	    			<![CDATA[
+	    			接收消息截取器，即根据消息格式从流中读出一个完整的消息
+					实现cn.brent.socketclient.IProcessor接口或继承cn.brent.socketclient.AbsProcessor
+	    			可选配置：
+	    			cn.brent.socketclient.processor.CloseStreamProcessor 一直读到对方关闭输出流（短连接）
+	    			cn.brent.socketclient.processor.ReadLineProcessor 以换行符进行分隔
+	    			]]>
+					</documentation>
+				</annotation>
+			</attribute>
+		</complexType>
+	</element>
+
+	<element name="msglistener">
+		<annotation>
+			<documentation>
+    		<![CDATA[
+   			异步消息侦听配置
+   			]]>
+			</documentation>
+		</annotation>
+		<complexType>
+			<attribute name="open" type="boolean" default="false">
+				<annotation>
+					<documentation>
+		    		<![CDATA[
+		   			是否开启异步消息侦听，当长连接配置开启时，不允许发送同步消息
+		   			]]>
+					</documentation>
+				</annotation>
+			</attribute>
+			<attribute name="listener" type="string" use="required">
+				<annotation>
+					<documentation>
+		    		<![CDATA[
+		   			异步消息侦听器，当收到消息后进行回调
+		   			实现cn.brent.socketclient.IMsgListener接口
+		   			]]>
+					</documentation>
+				</annotation>
+			</attribute>
+			<attribute name="maxRunner" type="int" default="200">
+				<annotation>
+					<documentation>
+		    		<![CDATA[
+		   			异步消息线程池最大线程数
+		   			]]>
+					</documentation>
+				</annotation>
+			</attribute>
+		</complexType>
+	</element>
+
+	<element name="heartbeat">
+		<annotation>
+			<documentation>
+    		<![CDATA[
+   			心跳配置
+   			]]>
+			</documentation>
+		</annotation>
+		<complexType>
+			<attribute name="interval" type="int" use="required">
+				<annotation>
+					<documentation>
+		    		<![CDATA[
+		   			两次心跳之间间隔（单位：毫秒）
+		   			]]>
+					</documentation>
+				</annotation>
+			</attribute>
+			<attribute name="msg" type="string" use="required">
+				<annotation>
+					<documentation>
+		    		<![CDATA[
+		   			心跳内容
+		   			]]>
+					</documentation>
+				</annotation>
+			</attribute>
+		</complexType>
+	</element>
+
+	<element name="pool">
+		<annotation>
+			<documentation>
+    		<![CDATA[
+   			连接池配置
+   			]]>
+			</documentation>
+		</annotation>
+		<complexType>
+			<attribute name="maxTotal" type="int" default="8">
+				<annotation>
+					<documentation>
+		    		<![CDATA[
+		   			最大连接数
+		   			]]>
+					</documentation>
+				</annotation>
+			</attribute>
+		</complexType>
+	</element>
+
+	<attributeGroup name="socketAttr">
+		<attribute name="id" type="string" use="required">
+			<annotation>
+				<documentation>
+    			<![CDATA[
+    			唯一标识
+    			]]>
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="address" type="string" use="required">
+			<annotation>
+				<documentation>
+    			<![CDATA[
+    			sokcet服务器连接地址
+    			]]>
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="port" type="int" use="required" >
+			<annotation>
+				<documentation>
+    			<![CDATA[
+    			socket服务器端口
+    			]]>
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="timeout" type="int" default="30000">
+			<annotation>
+				<documentation>
+    			<![CDATA[
+    			连接超时时间（单位：毫秒）
+    			]]>
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="retry" type="int" default="1">
+			<annotation>
+				<documentation>
+    			<![CDATA[
+    			连接超时进重试次数
+    			]]>
+				</documentation>
+			</annotation>
+		</attribute>
+		<attribute name="retryInterval" type="int" default="1000">
+			<annotation>
+				<documentation>
+    			<![CDATA[
+    			两次重试之间的时间间隔（单位：毫秒）
+    			]]>
+				</documentation>
+			</annotation>
+		</attribute>
+	</attributeGroup>
+
+</schema>
