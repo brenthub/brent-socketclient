@@ -2,6 +2,13 @@
 <socket-configs xmlns="http://www.brent.cn/schema/socketclient" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.brent.cn/schema/socketclient http://www.brent.cn/schema/socketclient-1.0.xsd">
 	
+	<!-- 
+	使用xsd进行xml校验和提示
+	1、Window->Preferences->XML->XML Catalog->User Specified Entries窗口中,选择Add 按纽  
+	2、找到工程内的socketclient-1.0.xsd，将key改成http://www.brent.cn/schema/socketclient-1.0.xsd
+	3、重新打开xml文件就能看到提示
+	 -->
+	
 	<socket-short id="test" address="127.0.0.1" port="9008" timeout="30000" retry="1" retryInterval="1000">
 		<send charset="UTF-8" />
 		<receive charset="UTF-8" processor="cn.brent.socketclient.processor.CloseStreamProcessor"/>

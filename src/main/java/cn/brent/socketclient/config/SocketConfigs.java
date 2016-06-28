@@ -22,10 +22,6 @@ public class SocketConfigs {
 
 	private Map<String, SocketConfig> configs = new HashMap<String, SocketConfig>();
 
-	private static final String SCHEMA_LANGUAGE_ATTRIBUTE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
-
-	private static final String XSD_SCHEMA_LANGUAGE = "http://www.w3.org/2001/XMLSchema";
-
 	private SocketConfigs() {
 	}
 
@@ -35,7 +31,7 @@ public class SocketConfigs {
 
 			dig.setValidating(true);
 			dig.setNamespaceAware(true);
-			dig.setProperty(SCHEMA_LANGUAGE_ATTRIBUTE, XSD_SCHEMA_LANGUAGE);
+			dig.setProperty(SocketClientResolver.SCHEMA_LANGUAGE_ATTRIBUTE, SocketClientResolver.XSD_SCHEMA_LANGUAGE);
 			dig.setEntityResolver(new SocketClientResolver());
 			dig.setErrorHandler(new ErrorHandler() {
 

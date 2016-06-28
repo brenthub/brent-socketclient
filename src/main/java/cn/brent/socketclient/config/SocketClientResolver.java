@@ -10,6 +10,10 @@ import org.xml.sax.SAXException;
 public class SocketClientResolver implements EntityResolver {
 	
 	public static final String NAMESPACE_PREFIX="http://www.brent.cn/schema/";
+	
+	public static final String SCHEMA_LANGUAGE_ATTRIBUTE = "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
+
+	public static final String XSD_SCHEMA_LANGUAGE = "http://www.w3.org/2001/XMLSchema";
 
 	@Override
 	public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
