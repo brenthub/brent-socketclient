@@ -8,7 +8,7 @@
 	</parent>
 
 	<artifactId>brent-socketclient</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<dependencies>
@@ -55,7 +55,7 @@
 	<scm>
 		<connection>scm:git:https://github.com/brenthub/brent-socketclient.git</connection>
 		<url>scm:git:https://github.com/brenthub/brent-socketclient</url>
-	  <tag>brent-socketclient-1.0.0</tag>
+	  <tag>HEAD</tag>
   </scm>
 
 </project>
